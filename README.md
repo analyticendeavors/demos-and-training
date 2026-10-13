@@ -9,10 +9,5 @@ Code and examples from the Analytic Endeavors demos and training sessions on Pow
 
 ## Using it
 
-Clone the repo, or download the folder you need, then follow the README in that folder. Most examples deploy with the Fabric CLI, so you'll need it installed and signed in with `fab auth login`.
+Clone the repo, or download the folder you need, then follow the README in that folder. 
 
-The code is written for teaching, so it's kept simple and leaves out the validation and error handling you'd want in production.
-
-## Contact
-
-Built by Steve Campbell and Reid Havens at [Analytic Endeavors](https://analyticendeavors.com). Questions and issues are welcome on the repo.
