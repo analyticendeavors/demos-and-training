@@ -1,0 +1,12 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Warehouse",
+    "displayName": "NYCTaxi",
+    "description": ""
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "a091370a-1783-b8c3-4774-9082a8a25685"
+  }
+}

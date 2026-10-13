@@ -1,0 +1,423 @@
+{
+  "properties": {
+    "activities": [
+      {
+        "type": "Lookup",
+        "typeProperties": {
+          "source": {
+            "type": "DataWarehouseSource",
+            "sqlReaderQuery": {
+              "value": "SELECT SourceTable, DestinationTable, LoadType, WatermarkColumn FROM dbo.PipelineMetadataIncremental WHERE UpdateValue = 1",
+              "type": "Expression"
+            },
+            "partitionOption": "None",
+            "queryTimeout": "02:00:00"
+          },
+          "datasetSettings": {
+            "type": "DataWarehouseTable",
+            "schema": [],
+            "linkedService": {
+              "name": "Logging",
+              "properties": {
+                "type": "DataWarehouse",
+                "typeProperties": {
+                  "artifactId": "5dcfbe41-1d13-b24d-4ae6-9bfbb3fe224b",
+                  "endpoint": "6ztxy5cesmcuhihkgrhbkpxmdm-4o2drzi5lnjudgbfuukdy2dp4u.datawarehouse.fabric.microsoft.com",
+                  "workspaceId": "00000000-0000-0000-0000-000000000000"
+                },
+                "annotations": []
+              }
+            },
+            "annotations": []
+          },
+          "firstRowOnly": false
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "getTables",
+        "dependsOn": []
+      },
+      {
+        "type": "ForEach",
+        "typeProperties": {
+          "isSequential": true,
+          "items": {
+            "value": "@activity('getTables').output.value",
+            "type": "Expression"
+          },
+          "activities": [
+            {
+              "type": "SetVariable",
+              "typeProperties": {
+                "variableName": "SourceTable",
+                "value": {
+                  "value": "@item().SourceTable",
+                  "type": "Expression"
+                }
+              },
+              "policy": {
+                "secureInput": false,
+                "secureOutput": false
+              },
+              "name": "Set Source",
+              "dependsOn": []
+            },
+            {
+              "type": "SetVariable",
+              "typeProperties": {
+                "variableName": "DestinationTable",
+                "value": {
+                  "value": "@item().DestinationTable",
+                  "type": "Expression"
+                }
+              },
+              "policy": {
+                "secureInput": false,
+                "secureOutput": false
+              },
+              "name": "Set Destination",
+              "dependsOn": [
+                {
+                  "activity": "Set Source",
+                  "dependencyConditions": [
+                    "Succeeded"
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "IfCondition",
+              "typeProperties": {
+                "expression": {
+                  "value": "@equals(item().LoadType, 'Incremental')",
+                  "type": "Expression"
+                },
+                "ifTrueActivities": [
+                  {
+                    "type": "Lookup",
+                    "typeProperties": {
+                      "source": {
+                        "type": "DataWarehouseSource",
+                        "sqlReaderQuery": {
+                          "value": "SELECT WatermarkValue FROM dbo.Watermark WHERE TableName = '@{variables('SourceTable')}'",
+                          "type": "Expression"
+                        },
+                        "partitionOption": "None",
+                        "queryTimeout": "02:00:00"
+                      },
+                      "datasetSettings": {
+                        "type": "DataWarehouseTable",
+                        "schema": [],
+                        "linkedService": {
+                          "name": "Logging",
+                          "properties": {
+                            "type": "DataWarehouse",
+                            "typeProperties": {
+                              "artifactId": "5dcfbe41-1d13-b24d-4ae6-9bfbb3fe224b",
+                              "endpoint": "6ztxy5cesmcuhihkgrhbkpxmdm-4o2drzi5lnjudgbfuukdy2dp4u.datawarehouse.fabric.microsoft.com",
+                              "workspaceId": "00000000-0000-0000-0000-000000000000"
+                            },
+                            "annotations": []
+                          }
+                        },
+                        "annotations": []
+                      },
+                      "firstRowOnly": true
+                    },
+                    "policy": {
+                      "timeout": "0.12:00:00",
+                      "retry": 0,
+                      "retryIntervalInSeconds": 30,
+                      "secureInput": false,
+                      "secureOutput": false
+                    },
+                    "name": "getOldWatermark",
+                    "dependsOn": []
+                  },
+                  {
+                    "type": "Lookup",
+                    "typeProperties": {
+                      "source": {
+                        "type": "DataWarehouseSource",
+                        "sqlReaderQuery": {
+                          "value": "SELECT CAST(MAX([@{item().WatermarkColumn}]) AS VARCHAR(50)) AS NewWatermark FROM dbo.[@{variables('SourceTable')}]",
+                          "type": "Expression"
+                        },
+                        "partitionOption": "None",
+                        "queryTimeout": "02:00:00"
+                      },
+                      "datasetSettings": {
+                        "type": "DataWarehouseTable",
+                        "schema": [],
+                        "linkedService": {
+                          "name": "NYCTaxi",
+                          "properties": {
+                            "type": "DataWarehouse",
+                            "typeProperties": {
+                              "artifactId": "a091370a-1783-b8c3-4774-9082a8a25685",
+                              "endpoint": "6ztxy5cesmcuhihkgrhbkpxmdm-4o2drzi5lnjudgbfuukdy2dp4u.datawarehouse.fabric.microsoft.com",
+                              "workspaceId": "00000000-0000-0000-0000-000000000000"
+                            },
+                            "annotations": []
+                          }
+                        },
+                        "annotations": []
+                      },
+                      "firstRowOnly": true
+                    },
+                    "policy": {
+                      "timeout": "0.12:00:00",
+                      "retry": 0,
+                      "retryIntervalInSeconds": 30,
+                      "secureInput": false,
+                      "secureOutput": false
+                    },
+                    "name": "getNewWatermark",
+                    "dependsOn": []
+                  },
+                  {
+                    "type": "Copy",
+                    "typeProperties": {
+                      "source": {
+                        "type": "DataWarehouseSource",
+                        "sqlReaderQuery": {
+                          "value": "SELECT * FROM dbo.[@{variables('SourceTable')}] WHERE [@{item().WatermarkColumn}] > '@{activity('getOldWatermark').output.firstRow.WatermarkValue}' AND [@{item().WatermarkColumn}] <= '@{activity('getNewWatermark').output.firstRow.NewWatermark}'",
+                          "type": "Expression"
+                        },
+                        "partitionOption": "None",
+                        "queryTimeout": "02:00:00",
+                        "datasetSettings": {
+                          "type": "DataWarehouseTable",
+                          "schema": [],
+                          "linkedService": {
+                            "name": "NYCTaxi",
+                            "properties": {
+                              "type": "DataWarehouse",
+                              "typeProperties": {
+                                "artifactId": "a091370a-1783-b8c3-4774-9082a8a25685",
+                                "endpoint": "6ztxy5cesmcuhihkgrhbkpxmdm-4o2drzi5lnjudgbfuukdy2dp4u.datawarehouse.fabric.microsoft.com",
+                                "workspaceId": "00000000-0000-0000-0000-000000000000"
+                              },
+                              "annotations": []
+                            }
+                          },
+                          "annotations": []
+                        }
+                      },
+                      "sink": {
+                        "type": "LakehouseTableSink",
+                        "tableActionOption": "Append",
+                        "datasetSettings": {
+                          "type": "LakehouseTable",
+                          "typeProperties": {
+                            "table": {
+                              "value": "@variables('DestinationTable')",
+                              "type": "Expression"
+                            }
+                          },
+                          "schema": [],
+                          "linkedService": {
+                            "name": "TaxiBronze",
+                            "properties": {
+                              "type": "Lakehouse",
+                              "typeProperties": {
+                                "artifactId": "44d825c4-3b24-92ab-4543-6a6b3c5d9e3b",
+                                "workspaceId": "00000000-0000-0000-0000-000000000000",
+                                "rootFolder": "Tables"
+                              },
+                              "annotations": []
+                            }
+                          },
+                          "annotations": []
+                        }
+                      },
+                      "enableStaging": false
+                    },
+                    "policy": {
+                      "timeout": "0.12:00:00",
+                      "retry": 0,
+                      "retryIntervalInSeconds": 30,
+                      "secureInput": false,
+                      "secureOutput": false
+                    },
+                    "name": "Copy data Incremental",
+                    "dependsOn": [
+                      {
+                        "activity": "getOldWatermark",
+                        "dependencyConditions": [
+                          "Succeeded"
+                        ]
+                      },
+                      {
+                        "activity": "getNewWatermark",
+                        "dependencyConditions": [
+                          "Succeeded"
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "SqlServerStoredProcedure",
+                    "typeProperties": {
+                      "storedProcedureName": "[dbo].[usp_write_watermark]",
+                      "storedProcedureParameters": {
+                        "TableName": {
+                          "value": {
+                            "value": "@variables('SourceTable')",
+                            "type": "Expression"
+                          },
+                          "type": "String"
+                        },
+                        "WatermarkValue": {
+                          "value": {
+                            "value": "@activity('getNewWatermark').output.firstRow.NewWatermark",
+                            "type": "Expression"
+                          },
+                          "type": "String"
+                        }
+                      }
+                    },
+                    "linkedService": {
+                      "name": "Logging",
+                      "properties": {
+                        "type": "DataWarehouse",
+                        "typeProperties": {
+                          "artifactId": "5dcfbe41-1d13-b24d-4ae6-9bfbb3fe224b",
+                          "endpoint": "6ztxy5cesmcuhihkgrhbkpxmdm-4o2drzi5lnjudgbfuukdy2dp4u.datawarehouse.fabric.microsoft.com",
+                          "workspaceId": "00000000-0000-0000-0000-000000000000"
+                        },
+                        "annotations": []
+                      }
+                    },
+                    "policy": {
+                      "timeout": "0.12:00:00",
+                      "retry": 0,
+                      "retryIntervalInSeconds": 30,
+                      "secureInput": false,
+                      "secureOutput": false
+                    },
+                    "name": "Write Watermark",
+                    "dependsOn": [
+                      {
+                        "activity": "Copy data Incremental",
+                        "dependencyConditions": [
+                          "Succeeded"
+                        ]
+                      }
+                    ]
+                  }
+                ],
+                "ifFalseActivities": [
+                  {
+                    "type": "Copy",
+                    "typeProperties": {
+                      "source": {
+                        "type": "DataWarehouseSource",
+                        "partitionOption": "None",
+                        "queryTimeout": "02:00:00",
+                        "datasetSettings": {
+                          "type": "DataWarehouseTable",
+                          "typeProperties": {
+                            "schema": "dbo",
+                            "table": {
+                              "value": "@variables('SourceTable')",
+                              "type": "Expression"
+                            }
+                          },
+                          "schema": [],
+                          "linkedService": {
+                            "name": "NYCTaxi",
+                            "properties": {
+                              "type": "DataWarehouse",
+                              "typeProperties": {
+                                "artifactId": "a091370a-1783-b8c3-4774-9082a8a25685",
+                                "endpoint": "6ztxy5cesmcuhihkgrhbkpxmdm-4o2drzi5lnjudgbfuukdy2dp4u.datawarehouse.fabric.microsoft.com",
+                                "workspaceId": "00000000-0000-0000-0000-000000000000"
+                              },
+                              "annotations": []
+                            }
+                          },
+                          "annotations": []
+                        }
+                      },
+                      "sink": {
+                        "type": "LakehouseTableSink",
+                        "tableActionOption": "Overwrite",
+                        "datasetSettings": {
+                          "type": "LakehouseTable",
+                          "typeProperties": {
+                            "table": {
+                              "value": "@variables('DestinationTable')",
+                              "type": "Expression"
+                            }
+                          },
+                          "schema": [],
+                          "linkedService": {
+                            "name": "TaxiBronze",
+                            "properties": {
+                              "type": "Lakehouse",
+                              "typeProperties": {
+                                "artifactId": "44d825c4-3b24-92ab-4543-6a6b3c5d9e3b",
+                                "workspaceId": "00000000-0000-0000-0000-000000000000",
+                                "rootFolder": "Tables"
+                              },
+                              "annotations": []
+                            }
+                          },
+                          "annotations": []
+                        }
+                      },
+                      "enableStaging": false
+                    },
+                    "policy": {
+                      "timeout": "0.12:00:00",
+                      "retry": 0,
+                      "retryIntervalInSeconds": 30,
+                      "secureInput": false,
+                      "secureOutput": false
+                    },
+                    "name": "Copy data Full",
+                    "dependsOn": []
+                  }
+                ]
+              },
+              "name": "If Incremental",
+              "dependsOn": [
+                {
+                  "activity": "Set Destination",
+                  "dependencyConditions": [
+                    "Succeeded"
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "name": "ForEach",
+        "dependsOn": [
+          {
+            "activity": "getTables",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ]
+      }
+    ],
+    "variables": {
+      "SourceTable": {
+        "type": "String",
+        "defaultValue": ""
+      },
+      "DestinationTable": {
+        "type": "String",
+        "defaultValue": ""
+      }
+    }
+  }
+}
