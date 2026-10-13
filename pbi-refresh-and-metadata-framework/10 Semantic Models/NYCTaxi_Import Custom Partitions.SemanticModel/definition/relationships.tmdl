@@ -1,0 +1,8 @@
+relationship 2a41d6fa-6dee-4096-a3b1-71966514ff05
+	fromColumn: FactTrip.PickupDateKey
+	toColumn: DimDate.DateKey
+
+relationship 6c3e40f8-0810-4fb3-a327-55a259287fb7
+	fromColumn: FactTrip.PickupLocationID
+	toColumn: DimLocation.LocationID
+

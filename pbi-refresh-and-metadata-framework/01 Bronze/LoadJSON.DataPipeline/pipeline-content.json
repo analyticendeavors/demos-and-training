@@ -1,0 +1,104 @@
+{
+  "properties": {
+    "activities": [
+      {
+        "type": "Copy",
+        "typeProperties": {
+          "source": {
+            "type": "BinarySource",
+            "formatSettings": {
+              "type": "BinaryReadSettings"
+            },
+            "storeSettings": {
+              "type": "LakehouseReadSettings",
+              "recursive": false
+            },
+            "datasetSettings": {
+              "type": "Binary",
+              "typeProperties": {
+                "location": {
+                  "type": "LakehouseLocation",
+                  "fileName": {
+                    "value": "@concat(pipeline().parameters.SourceTableName, '.json')",
+                    "type": "Expression"
+                  }
+                }
+              },
+              "connectionSettings": {
+                "name": "Source",
+                "properties": {
+                  "type": "Lakehouse",
+                  "typeProperties": {
+                    "artifactId": "12b8e2e1-8db1-8855-46e5-ccf26e972b21",
+                    "workspaceId": "00000000-0000-0000-0000-000000000000",
+                    "rootFolder": "Files"
+                  },
+                  "externalReferences": {
+                    "connection": {
+                      "value": "@pipeline().parameters.ConnectionID",
+                      "type": "Expression"
+                    }
+                  },
+                  "annotations": []
+                }
+              },
+              "annotations": []
+            }
+          },
+          "sink": {
+            "type": "BinarySink",
+            "storeSettings": {
+              "type": "LakehouseWriteSettings"
+            },
+            "datasetSettings": {
+              "type": "Binary",
+              "typeProperties": {
+                "location": {
+                  "type": "LakehouseLocation",
+                  "fileName": {
+                    "value": "@concat(pipeline().parameters.SourceTableName, '.json')",
+                    "type": "Expression"
+                  }
+                }
+              },
+              "connectionSettings": {
+                "name": "Bronze",
+                "properties": {
+                  "type": "Lakehouse",
+                  "typeProperties": {
+                    "artifactId": "3e32922b-6231-8fc3-46aa-e22e422dd95b",
+                    "workspaceId": "00000000-0000-0000-0000-000000000000",
+                    "rootFolder": "Files"
+                  },
+                  "externalReferences": {
+                    "connection": "f3ff14e2-4d12-41bc-9d0a-e28cfb99fc49"
+                  },
+                  "annotations": []
+                }
+              },
+              "annotations": []
+            }
+          },
+          "enableStaging": false
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "Copy JSON file to Bronze file",
+        "dependsOn": []
+      }
+    ],
+    "parameters": {
+      "SourceTableName": {
+        "type": "string"
+      },
+      "ConnectionID": {
+        "type": "string"
+      }
+    }
+  }
+}

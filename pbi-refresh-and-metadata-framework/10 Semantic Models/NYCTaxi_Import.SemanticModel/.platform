@@ -1,0 +1,12 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "SemanticModel",
+    "displayName": "NYCTaxi_Import",
+    "description": "Import-mode NYC Taxi semantic model generated from TMDL in a Fabric notebook."
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "dc6ec3e4-cbc8-9ee3-4dc9-bc26828a6a1b"
+  }
+}

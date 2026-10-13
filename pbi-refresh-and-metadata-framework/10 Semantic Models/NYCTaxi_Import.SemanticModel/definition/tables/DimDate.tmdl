@@ -1,0 +1,52 @@
+table DimDate
+	dataCategory: Time
+
+	column DateKey
+		dataType: int64
+		isHidden
+		isKey
+		summarizeBy: none
+		sourceColumn: DateKey
+
+	column Date
+		dataType: dateTime
+		formatString: yyyy-mm-dd
+		summarizeBy: none
+		sourceColumn: Date
+
+	column Year
+		dataType: int64
+		summarizeBy: none
+		sourceColumn: Year
+
+	column MonthNumber
+		dataType: int64
+		isHidden
+		summarizeBy: none
+		sourceColumn: MonthNumber
+
+	column MonthName
+		dataType: string
+		summarizeBy: none
+		sourceColumn: MonthName
+		sortByColumn: MonthNumber
+
+	column Quarter
+		dataType: int64
+		summarizeBy: none
+		sourceColumn: Quarter
+
+	column DayOfMonth
+		dataType: int64
+		summarizeBy: none
+		sourceColumn: DayOfMonth
+
+	partition DimDate = m
+		mode: import
+		source =
+				let
+					Source = Sql.Database("6ztxy5cesmcuhihkgrhbkpxmdm-bd5ehkikwtiedmh4fkrihjbzhq.datawarehouse.fabric.microsoft.com", "4c642cdd-1bb5-4aa8-99c8-90de7841cefd"),
+					Data = Source{[Schema="dbo", Item="DimDate"]}[Data]
+				in
+					Data
+

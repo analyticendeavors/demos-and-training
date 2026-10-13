@@ -1,0 +1,37 @@
+table DimLocation
+	lineageTag: 768cf47c-46c9-4f21-82e5-2d891fe5c57c
+
+	column LocationID
+		dataType: int64
+		isKey
+		lineageTag: f229c638-fbf7-41be-91be-b64e8f0ffb0b
+		summarizeBy: none
+		sourceColumn: LocationID
+
+	column Borough
+		dataType: string
+		lineageTag: 082f0a5a-cbef-4e7b-8400-b2fbc25b2b48
+		summarizeBy: none
+		sourceColumn: Borough
+
+	column Zone
+		dataType: string
+		lineageTag: 9c0a9581-2b5b-4762-9f71-ca5004e7f2bc
+		summarizeBy: none
+		sourceColumn: Zone
+
+	column ServiceZone
+		dataType: string
+		lineageTag: 56f1c8f9-12ad-47a3-b53b-7e9052efa064
+		summarizeBy: none
+		sourceColumn: ServiceZone
+
+	partition DimLocation = m
+		mode: import
+		source =
+				let
+					Source = Sql.Database("6ztxy5cesmcuhihkgrhbkpxmdm-bd5ehkikwtiedmh4fkrihjbzhq.datawarehouse.fabric.microsoft.com", "4c642cdd-1bb5-4aa8-99c8-90de7841cefd"),
+					Data = Source{[Schema="dbo", Item="DimLocation"]}[Data]
+				in
+					Data
+

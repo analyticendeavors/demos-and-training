@@ -1,0 +1,187 @@
+{
+  "properties": {
+    "activities": [
+      {
+        "type": "SetVariable",
+        "typeProperties": {
+          "variableName": "LoadStartTime",
+          "value": {
+            "value": "@utcnow()",
+            "type": "Expression"
+          }
+        },
+        "policy": {
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "Set LoadStartTime",
+        "dependsOn": []
+      },
+      {
+        "type": "TridentNotebook",
+        "typeProperties": {
+          "notebookId": "11ab8ac0-dc97-9c19-48bd-4e269130e148",
+          "workspaceId": "00000000-0000-0000-0000-000000000000",
+          "parameters": {
+            "VendorID": {
+              "value": {
+                "value": "@pipeline().parameters.VendorID",
+                "type": "Expression"
+              },
+              "type": "string"
+            }
+          }
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "md-01-BronzeLoad",
+        "dependsOn": [
+          {
+            "activity": "Set LoadStartTime",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "TridentNotebook",
+        "typeProperties": {
+          "notebookId": "cc1139d4-d404-b99d-48ec-fa01c1efe47b",
+          "workspaceId": "00000000-0000-0000-0000-000000000000",
+          "parameters": {
+            "VendorID": {
+              "value": {
+                "value": "@pipeline().parameters.VendorID",
+                "type": "Expression"
+              },
+              "type": "string"
+            }
+          }
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "md-02-SilverLoad",
+        "dependsOn": [
+          {
+            "activity": "md-01-BronzeLoad",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "TridentNotebook",
+        "typeProperties": {
+          "notebookId": "871f684e-b536-a700-47c8-e674f6b9d8bf",
+          "workspaceId": "00000000-0000-0000-0000-000000000000",
+          "parameters": {
+            "VendorID": {
+              "value": {
+                "value": "@pipeline().parameters.VendorID",
+                "type": "Expression"
+              },
+              "type": "string"
+            }
+          }
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "md-03-GoldLoad",
+        "dependsOn": [
+          {
+            "activity": "md-02-SilverLoad",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "TridentNotebook",
+        "typeProperties": {
+          "notebookId": "4dc3ca5f-0852-b2ed-44a6-e6f5fb401bfe",
+          "workspaceId": "00000000-0000-0000-0000-000000000000",
+          "parameters": {
+            "VendorID": {
+              "value": {
+                "value": "@pipeline().parameters.VendorID",
+                "type": "Expression"
+              },
+              "type": "string"
+            }
+          }
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "md-04-RefreshModel",
+        "dependsOn": [
+          {
+            "activity": "md-03-GoldLoad",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "SetVariable",
+        "typeProperties": {
+          "variableName": "LoadEndTime",
+          "value": {
+            "value": "@utcnow()",
+            "type": "Expression"
+          }
+        },
+        "policy": {
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "Set LoadEndTime",
+        "dependsOn": [
+          {
+            "activity": "md-04-RefreshModel",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ]
+      }
+    ],
+    "parameters": {
+      "VendorID": {
+        "type": "string",
+        "defaultValue": ""
+      }
+    },
+    "variables": {
+      "LoadStartTime": {
+        "type": "String"
+      },
+      "LoadEndTime": {
+        "type": "String"
+      }
+    }
+  }
+}

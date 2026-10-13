@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "SemanticModel",
+    "displayName": "NYCTaxi_Import Custom Partitions"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "5c852e57-afe0-a6bd-4779-afb7df3b3b34"
+  }
+}

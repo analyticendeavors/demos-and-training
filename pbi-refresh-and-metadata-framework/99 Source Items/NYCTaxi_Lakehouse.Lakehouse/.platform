@@ -1,0 +1,12 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Lakehouse",
+    "displayName": "NYCTaxi_Lakehouse",
+    "description": "NYC Taxi lab Lakehouse created from a Fabric notebook."
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "12b8e2e1-8db1-8855-46e5-ccf26e972b21"
+  }
+}

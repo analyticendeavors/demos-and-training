@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "UserDataFunction",
+    "displayName": "SilverFunctions"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "687cd306-6c30-afa5-47d5-6b2e76d6f30f"
+  }
+}

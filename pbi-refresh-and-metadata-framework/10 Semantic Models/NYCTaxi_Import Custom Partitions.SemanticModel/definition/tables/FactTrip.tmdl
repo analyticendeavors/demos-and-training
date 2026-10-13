@@ -1,0 +1,597 @@
+table FactTrip
+	lineageTag: 0a147890-20f4-41f4-9654-85781018da9e
+
+	measure 'Trip Count' = COUNTROWS(FactTrip)
+		formatString: #,##0
+
+	measure 'Total Fare' = SUM(FactTrip[FareAmount])
+		formatString: $#,##0.00
+
+	measure 'Total Tips' = SUM(FactTrip[TipAmount])
+		formatString: $#,##0.00
+
+	measure 'Total Revenue' = SUM(FactTrip[TotalAmount])
+		formatString: $#,##0.00
+
+	measure 'Average Trip Distance' = AVERAGE(FactTrip[TripDistance])
+		formatString: #,##0.00
+
+	column VendorID
+		dataType: int64
+		isHidden
+		lineageTag: e143ee17-8a05-4570-8a15-e9e14751d9ab
+		summarizeBy: none
+		sourceColumn: VendorID
+
+	column PickupDateTime
+		dataType: dateTime
+		lineageTag: e0cee8cf-68a5-4974-a7c6-a334093fc3cc
+		summarizeBy: none
+		sourceColumn: PickupDateTime
+
+	column DropoffDateTime
+		dataType: dateTime
+		lineageTag: 4451596e-d408-44cb-b693-c1b98aaffaae
+		summarizeBy: none
+		sourceColumn: DropoffDateTime
+
+	column PickupDateKey
+		dataType: int64
+		isHidden
+		lineageTag: 0858318c-0153-449d-a035-22f6bd53af0f
+		summarizeBy: none
+		sourceColumn: PickupDateKey
+
+	column PickupLocationID
+		dataType: int64
+		isHidden
+		lineageTag: a5d50db4-9ddd-4dcd-a893-e356b7b7f3b1
+		summarizeBy: none
+		sourceColumn: PickupLocationID
+
+	column DropoffLocationID
+		dataType: int64
+		lineageTag: 94004559-3d67-4ffb-b4a7-96d2d061f8dc
+		summarizeBy: none
+		sourceColumn: DropoffLocationID
+
+	column PassengerCount
+		dataType: double
+		lineageTag: 15d7ec5c-a2c6-4682-85c8-044bb2b69f1d
+		summarizeBy: sum
+		sourceColumn: PassengerCount
+
+	column TripDistance
+		dataType: double
+		lineageTag: beb63768-f398-43e5-b26d-5c9c4b862a9c
+		summarizeBy: sum
+		sourceColumn: TripDistance
+
+	column PaymentType
+		dataType: int64
+		lineageTag: bc9148bb-fed9-48cb-908b-31b4382b8bb1
+		summarizeBy: none
+		sourceColumn: PaymentType
+
+	column FareAmount
+		dataType: double
+		lineageTag: 767de720-ee45-485f-8aae-68f49dc6719f
+		summarizeBy: sum
+		sourceColumn: FareAmount
+
+	column TipAmount
+		dataType: double
+		lineageTag: 02892138-dda2-4f55-88bd-d03d4cbb530a
+		summarizeBy: sum
+		sourceColumn: TipAmount
+
+	column TotalAmount
+		dataType: double
+		lineageTag: 737d2ae6-3dd3-422f-bab6-90aa6226d0f6
+		summarizeBy: sum
+		sourceColumn: TotalAmount
+
+	partition Vendor6_2024_05 = m
+		source =
+				let
+				    Source = Sql.Database("6ztxy5cesmcuhihkgrhbkpxmdm-bd5ehkikwtiedmh4fkrihjbzhq.datawarehouse.fabric.microsoft.com", "4c642cdd-1bb5-4aa8-99c8-90de7841cefd"),
+				    FactTrip = Source{[ Schema="dbo", Item="FactTrip"]}[Data],
+				    FilteredRows = Table.SelectRows(
+				        FactTrip,
+				        each [VendorID] = 6
+				            and [PickupDateTime] >= #datetime(2024, 5, 1, 0, 0, 0)
+				            and [PickupDateTime] < #datetime(2024, 6, 1, 0, 0, 0)
+				    )
+				in
+				    FilteredRows
+
+	partition Vendor6_2024_06 = m
+		source =
+				let
+				    Source = Sql.Database("6ztxy5cesmcuhihkgrhbkpxmdm-bd5ehkikwtiedmh4fkrihjbzhq.datawarehouse.fabric.microsoft.com", "4c642cdd-1bb5-4aa8-99c8-90de7841cefd"),
+				    FactTrip = Source{[ Schema="dbo", Item="FactTrip"]}[Data],
+				    FilteredRows = Table.SelectRows(
+				        FactTrip,
+				        each [VendorID] = 6
+				            and [PickupDateTime] >= #datetime(2024, 6, 1, 0, 0, 0)
+				            and [PickupDateTime] < #datetime(2024, 7, 1, 0, 0, 0)
+				    )
+				in
+				    FilteredRows
+
+	partition Vendor6_2024_07 = m
+		source =
+				let
+				    Source = Sql.Database("6ztxy5cesmcuhihkgrhbkpxmdm-bd5ehkikwtiedmh4fkrihjbzhq.datawarehouse.fabric.microsoft.com", "4c642cdd-1bb5-4aa8-99c8-90de7841cefd"),
+				    FactTrip = Source{[ Schema="dbo", Item="FactTrip"]}[Data],
+				    FilteredRows = Table.SelectRows(
+				        FactTrip,
+				        each [VendorID] = 6
+				            and [PickupDateTime] >= #datetime(2024, 7, 1, 0, 0, 0)
+				            and [PickupDateTime] < #datetime(2024, 8, 1, 0, 0, 0)
+				    )
+				in
+				    FilteredRows
+
+	partition Vendor6_2024_08 = m
+		source =
+				let
+				    Source = Sql.Database("6ztxy5cesmcuhihkgrhbkpxmdm-bd5ehkikwtiedmh4fkrihjbzhq.datawarehouse.fabric.microsoft.com", "4c642cdd-1bb5-4aa8-99c8-90de7841cefd"),
+				    FactTrip = Source{[ Schema="dbo", Item="FactTrip"]}[Data],
+				    FilteredRows = Table.SelectRows(
+				        FactTrip,
+				        each [VendorID] = 6
+				            and [PickupDateTime] >= #datetime(2024, 8, 1, 0, 0, 0)
+				            and [PickupDateTime] < #datetime(2024, 9, 1, 0, 0, 0)
+				    )
+				in
+				    FilteredRows
+
+	partition Vendor6_2024_09 = m
+		source =
+				let
+				    Source = Sql.Database("6ztxy5cesmcuhihkgrhbkpxmdm-bd5ehkikwtiedmh4fkrihjbzhq.datawarehouse.fabric.microsoft.com", "4c642cdd-1bb5-4aa8-99c8-90de7841cefd"),
+				    FactTrip = Source{[ Schema="dbo", Item="FactTrip"]}[Data],
+				    FilteredRows = Table.SelectRows(
+				        FactTrip,
+				        each [VendorID] = 6
+				            and [PickupDateTime] >= #datetime(2024, 9, 1, 0, 0, 0)
+				            and [PickupDateTime] < #datetime(2024, 10, 1, 0, 0, 0)
+				    )
+				in
+				    FilteredRows
+
+	partition Vendor6_2024_10 = m
+		source =
+				let
+				    Source = Sql.Database("6ztxy5cesmcuhihkgrhbkpxmdm-bd5ehkikwtiedmh4fkrihjbzhq.datawarehouse.fabric.microsoft.com", "4c642cdd-1bb5-4aa8-99c8-90de7841cefd"),
+				    FactTrip = Source{[ Schema="dbo", Item="FactTrip"]}[Data],
+				    FilteredRows = Table.SelectRows(
+				        FactTrip,
+				        each [VendorID] = 6
+				            and [PickupDateTime] >= #datetime(2024, 10, 1, 0, 0, 0)
+				            and [PickupDateTime] < #datetime(2024, 11, 1, 0, 0, 0)
+				    )
+				in
+				    FilteredRows
+
+	partition Vendor6_2024_11 = m
+		source =
+				let
+				    Source = Sql.Database("6ztxy5cesmcuhihkgrhbkpxmdm-bd5ehkikwtiedmh4fkrihjbzhq.datawarehouse.fabric.microsoft.com", "4c642cdd-1bb5-4aa8-99c8-90de7841cefd"),
+				    FactTrip = Source{[ Schema="dbo", Item="FactTrip"]}[Data],
+				    FilteredRows = Table.SelectRows(
+				        FactTrip,
+				        each [VendorID] = 6
+				            and [PickupDateTime] >= #datetime(2024, 11, 1, 0, 0, 0)
+				            and [PickupDateTime] < #datetime(2024, 12, 1, 0, 0, 0)
+				    )
+				in
+				    FilteredRows
+
+	partition Vendor6_2024_12 = m
+		source =
+				let
+				    Source = Sql.Database("6ztxy5cesmcuhihkgrhbkpxmdm-bd5ehkikwtiedmh4fkrihjbzhq.datawarehouse.fabric.microsoft.com", "4c642cdd-1bb5-4aa8-99c8-90de7841cefd"),
+				    FactTrip = Source{[ Schema="dbo", Item="FactTrip"]}[Data],
+				    FilteredRows = Table.SelectRows(
+				        FactTrip,
+				        each [VendorID] = 6
+				            and [PickupDateTime] >= #datetime(2024, 12, 1, 0, 0, 0)
+				            and [PickupDateTime] < #datetime(2025, 1, 1, 0, 0, 0)
+				    )
+				in
+				    FilteredRows
+
+	partition Vendor1_2024_09 = m
+		source =
+				let
+				    Source = Sql.Database("6ztxy5cesmcuhihkgrhbkpxmdm-bd5ehkikwtiedmh4fkrihjbzhq.datawarehouse.fabric.microsoft.com", "4c642cdd-1bb5-4aa8-99c8-90de7841cefd"),
+				    FactTrip = Source{[ Schema="dbo", Item="FactTrip"]}[Data],
+				    FilteredRows = Table.SelectRows(
+				        FactTrip,
+				        each [VendorID] = 1
+				            and [PickupDateTime] >= #datetime(2024, 9, 1, 0, 0, 0)
+				            and [PickupDateTime] < #datetime(2024, 10, 1, 0, 0, 0)
+				    )
+				in
+				    FilteredRows
+
+	partition Vendor1_2024_10 = m
+		source =
+				let
+				    Source = Sql.Database("6ztxy5cesmcuhihkgrhbkpxmdm-bd5ehkikwtiedmh4fkrihjbzhq.datawarehouse.fabric.microsoft.com", "4c642cdd-1bb5-4aa8-99c8-90de7841cefd"),
+				    FactTrip = Source{[ Schema="dbo", Item="FactTrip"]}[Data],
+				    FilteredRows = Table.SelectRows(
+				        FactTrip,
+				        each [VendorID] = 1
+				            and [PickupDateTime] >= #datetime(2024, 10, 1, 0, 0, 0)
+				            and [PickupDateTime] < #datetime(2024, 11, 1, 0, 0, 0)
+				    )
+				in
+				    FilteredRows
+
+	partition Vendor1_2024_11 = m
+		source =
+				let
+				    Source = Sql.Database("6ztxy5cesmcuhihkgrhbkpxmdm-bd5ehkikwtiedmh4fkrihjbzhq.datawarehouse.fabric.microsoft.com", "4c642cdd-1bb5-4aa8-99c8-90de7841cefd"),
+				    FactTrip = Source{[ Schema="dbo", Item="FactTrip"]}[Data],
+				    FilteredRows = Table.SelectRows(
+				        FactTrip,
+				        each [VendorID] = 1
+				            and [PickupDateTime] >= #datetime(2024, 11, 1, 0, 0, 0)
+				            and [PickupDateTime] < #datetime(2024, 12, 1, 0, 0, 0)
+				    )
+				in
+				    FilteredRows
+
+	partition Vendor1_2024_12 = m
+		source =
+				let
+				    Source = Sql.Database("6ztxy5cesmcuhihkgrhbkpxmdm-bd5ehkikwtiedmh4fkrihjbzhq.datawarehouse.fabric.microsoft.com", "4c642cdd-1bb5-4aa8-99c8-90de7841cefd"),
+				    FactTrip = Source{[ Schema="dbo", Item="FactTrip"]}[Data],
+				    FilteredRows = Table.SelectRows(
+				        FactTrip,
+				        each [VendorID] = 1
+				            and [PickupDateTime] >= #datetime(2024, 12, 1, 0, 0, 0)
+				            and [PickupDateTime] < #datetime(2025, 1, 1, 0, 0, 0)
+				    )
+				in
+				    FilteredRows
+
+	partition Vendor2_2024_09 = m
+		source =
+				let
+				    Source = Sql.Database("6ztxy5cesmcuhihkgrhbkpxmdm-bd5ehkikwtiedmh4fkrihjbzhq.datawarehouse.fabric.microsoft.com", "4c642cdd-1bb5-4aa8-99c8-90de7841cefd"),
+				    FactTrip = Source{[ Schema="dbo", Item="FactTrip"]}[Data],
+				    FilteredRows = Table.SelectRows(
+				        FactTrip,
+				        each [VendorID] = 2
+				            and [PickupDateTime] >= #datetime(2024, 9, 1, 0, 0, 0)
+				            and [PickupDateTime] < #datetime(2024, 10, 1, 0, 0, 0)
+				    )
+				in
+				    FilteredRows
+
+	partition Vendor2_2024_10 = m
+		source =
+				let
+				    Source = Sql.Database("6ztxy5cesmcuhihkgrhbkpxmdm-bd5ehkikwtiedmh4fkrihjbzhq.datawarehouse.fabric.microsoft.com", "4c642cdd-1bb5-4aa8-99c8-90de7841cefd"),
+				    FactTrip = Source{[ Schema="dbo", Item="FactTrip"]}[Data],
+				    FilteredRows = Table.SelectRows(
+				        FactTrip,
+				        each [VendorID] = 2
+				            and [PickupDateTime] >= #datetime(2024, 10, 1, 0, 0, 0)
+				            and [PickupDateTime] < #datetime(2024, 11, 1, 0, 0, 0)
+				    )
+				in
+				    FilteredRows
+
+	partition Vendor2_2024_11 = m
+		source =
+				let
+				    Source = Sql.Database("6ztxy5cesmcuhihkgrhbkpxmdm-bd5ehkikwtiedmh4fkrihjbzhq.datawarehouse.fabric.microsoft.com", "4c642cdd-1bb5-4aa8-99c8-90de7841cefd"),
+				    FactTrip = Source{[ Schema="dbo", Item="FactTrip"]}[Data],
+				    FilteredRows = Table.SelectRows(
+				        FactTrip,
+				        each [VendorID] = 2
+				            and [PickupDateTime] >= #datetime(2024, 11, 1, 0, 0, 0)
+				            and [PickupDateTime] < #datetime(2024, 12, 1, 0, 0, 0)
+				    )
+				in
+				    FilteredRows
+
+	partition Vendor2_2024_12 = m
+		source =
+				let
+				    Source = Sql.Database("6ztxy5cesmcuhihkgrhbkpxmdm-bd5ehkikwtiedmh4fkrihjbzhq.datawarehouse.fabric.microsoft.com", "4c642cdd-1bb5-4aa8-99c8-90de7841cefd"),
+				    FactTrip = Source{[ Schema="dbo", Item="FactTrip"]}[Data],
+				    FilteredRows = Table.SelectRows(
+				        FactTrip,
+				        each [VendorID] = 2
+				            and [PickupDateTime] >= #datetime(2024, 12, 1, 0, 0, 0)
+				            and [PickupDateTime] < #datetime(2025, 1, 1, 0, 0, 0)
+				    )
+				in
+				    FilteredRows
+
+	partition Vendor1_2024_01 = m
+		source =
+				let
+				    Source = Sql.Database("6ztxy5cesmcuhihkgrhbkpxmdm-bd5ehkikwtiedmh4fkrihjbzhq.datawarehouse.fabric.microsoft.com", "4c642cdd-1bb5-4aa8-99c8-90de7841cefd"),
+				    FactTrip = Source{[ Schema="dbo", Item="FactTrip"]}[Data],
+				    FilteredRows = Table.SelectRows(
+				        FactTrip,
+				        each [VendorID] = 1
+				            and [PickupDateTime] >= #datetime(2024, 1, 1, 0, 0, 0)
+				            and [PickupDateTime] < #datetime(2024, 2, 1, 0, 0, 0)
+				    )
+				in
+				    FilteredRows
+
+	partition Vendor1_2024_02 = m
+		source =
+				let
+				    Source = Sql.Database("6ztxy5cesmcuhihkgrhbkpxmdm-bd5ehkikwtiedmh4fkrihjbzhq.datawarehouse.fabric.microsoft.com", "4c642cdd-1bb5-4aa8-99c8-90de7841cefd"),
+				    FactTrip = Source{[ Schema="dbo", Item="FactTrip"]}[Data],
+				    FilteredRows = Table.SelectRows(
+				        FactTrip,
+				        each [VendorID] = 1
+				            and [PickupDateTime] >= #datetime(2024, 2, 1, 0, 0, 0)
+				            and [PickupDateTime] < #datetime(2024, 3, 1, 0, 0, 0)
+				    )
+				in
+				    FilteredRows
+
+	partition Vendor1_2024_03 = m
+		source =
+				let
+				    Source = Sql.Database("6ztxy5cesmcuhihkgrhbkpxmdm-bd5ehkikwtiedmh4fkrihjbzhq.datawarehouse.fabric.microsoft.com", "4c642cdd-1bb5-4aa8-99c8-90de7841cefd"),
+				    FactTrip = Source{[ Schema="dbo", Item="FactTrip"]}[Data],
+				    FilteredRows = Table.SelectRows(
+				        FactTrip,
+				        each [VendorID] = 1
+				            and [PickupDateTime] >= #datetime(2024, 3, 1, 0, 0, 0)
+				            and [PickupDateTime] < #datetime(2024, 4, 1, 0, 0, 0)
+				    )
+				in
+				    FilteredRows
+
+	partition Vendor1_2024_04 = m
+		source =
+				let
+				    Source = Sql.Database("6ztxy5cesmcuhihkgrhbkpxmdm-bd5ehkikwtiedmh4fkrihjbzhq.datawarehouse.fabric.microsoft.com", "4c642cdd-1bb5-4aa8-99c8-90de7841cefd"),
+				    FactTrip = Source{[ Schema="dbo", Item="FactTrip"]}[Data],
+				    FilteredRows = Table.SelectRows(
+				        FactTrip,
+				        each [VendorID] = 1
+				            and [PickupDateTime] >= #datetime(2024, 4, 1, 0, 0, 0)
+				            and [PickupDateTime] < #datetime(2024, 5, 1, 0, 0, 0)
+				    )
+				in
+				    FilteredRows
+
+	partition Vendor1_2024_05 = m
+		source =
+				let
+				    Source = Sql.Database("6ztxy5cesmcuhihkgrhbkpxmdm-bd5ehkikwtiedmh4fkrihjbzhq.datawarehouse.fabric.microsoft.com", "4c642cdd-1bb5-4aa8-99c8-90de7841cefd"),
+				    FactTrip = Source{[ Schema="dbo", Item="FactTrip"]}[Data],
+				    FilteredRows = Table.SelectRows(
+				        FactTrip,
+				        each [VendorID] = 1
+				            and [PickupDateTime] >= #datetime(2024, 5, 1, 0, 0, 0)
+				            and [PickupDateTime] < #datetime(2024, 6, 1, 0, 0, 0)
+				    )
+				in
+				    FilteredRows
+
+	partition Vendor1_2024_06 = m
+		source =
+				let
+				    Source = Sql.Database("6ztxy5cesmcuhihkgrhbkpxmdm-bd5ehkikwtiedmh4fkrihjbzhq.datawarehouse.fabric.microsoft.com", "4c642cdd-1bb5-4aa8-99c8-90de7841cefd"),
+				    FactTrip = Source{[ Schema="dbo", Item="FactTrip"]}[Data],
+				    FilteredRows = Table.SelectRows(
+				        FactTrip,
+				        each [VendorID] = 1
+				            and [PickupDateTime] >= #datetime(2024, 6, 1, 0, 0, 0)
+				            and [PickupDateTime] < #datetime(2024, 7, 1, 0, 0, 0)
+				    )
+				in
+				    FilteredRows
+
+	partition Vendor1_2024_07 = m
+		source =
+				let
+				    Source = Sql.Database("6ztxy5cesmcuhihkgrhbkpxmdm-bd5ehkikwtiedmh4fkrihjbzhq.datawarehouse.fabric.microsoft.com", "4c642cdd-1bb5-4aa8-99c8-90de7841cefd"),
+				    FactTrip = Source{[ Schema="dbo", Item="FactTrip"]}[Data],
+				    FilteredRows = Table.SelectRows(
+				        FactTrip,
+				        each [VendorID] = 1
+				            and [PickupDateTime] >= #datetime(2024, 7, 1, 0, 0, 0)
+				            and [PickupDateTime] < #datetime(2024, 8, 1, 0, 0, 0)
+				    )
+				in
+				    FilteredRows
+
+	partition Vendor1_2024_08 = m
+		source =
+				let
+				    Source = Sql.Database("6ztxy5cesmcuhihkgrhbkpxmdm-bd5ehkikwtiedmh4fkrihjbzhq.datawarehouse.fabric.microsoft.com", "4c642cdd-1bb5-4aa8-99c8-90de7841cefd"),
+				    FactTrip = Source{[ Schema="dbo", Item="FactTrip"]}[Data],
+				    FilteredRows = Table.SelectRows(
+				        FactTrip,
+				        each [VendorID] = 1
+				            and [PickupDateTime] >= #datetime(2024, 8, 1, 0, 0, 0)
+				            and [PickupDateTime] < #datetime(2024, 9, 1, 0, 0, 0)
+				    )
+				in
+				    FilteredRows
+
+	partition Vendor2_2024_01 = m
+		source =
+				let
+				    Source = Sql.Database("6ztxy5cesmcuhihkgrhbkpxmdm-bd5ehkikwtiedmh4fkrihjbzhq.datawarehouse.fabric.microsoft.com", "4c642cdd-1bb5-4aa8-99c8-90de7841cefd"),
+				    FactTrip = Source{[ Schema="dbo", Item="FactTrip"]}[Data],
+				    FilteredRows = Table.SelectRows(
+				        FactTrip,
+				        each [VendorID] = 2
+				            and [PickupDateTime] >= #datetime(2024, 1, 1, 0, 0, 0)
+				            and [PickupDateTime] < #datetime(2024, 2, 1, 0, 0, 0)
+				    )
+				in
+				    FilteredRows
+
+	partition Vendor2_2024_02 = m
+		source =
+				let
+				    Source = Sql.Database("6ztxy5cesmcuhihkgrhbkpxmdm-bd5ehkikwtiedmh4fkrihjbzhq.datawarehouse.fabric.microsoft.com", "4c642cdd-1bb5-4aa8-99c8-90de7841cefd"),
+				    FactTrip = Source{[ Schema="dbo", Item="FactTrip"]}[Data],
+				    FilteredRows = Table.SelectRows(
+				        FactTrip,
+				        each [VendorID] = 2
+				            and [PickupDateTime] >= #datetime(2024, 2, 1, 0, 0, 0)
+				            and [PickupDateTime] < #datetime(2024, 3, 1, 0, 0, 0)
+				    )
+				in
+				    FilteredRows
+
+	partition Vendor2_2024_03 = m
+		source =
+				let
+				    Source = Sql.Database("6ztxy5cesmcuhihkgrhbkpxmdm-bd5ehkikwtiedmh4fkrihjbzhq.datawarehouse.fabric.microsoft.com", "4c642cdd-1bb5-4aa8-99c8-90de7841cefd"),
+				    FactTrip = Source{[ Schema="dbo", Item="FactTrip"]}[Data],
+				    FilteredRows = Table.SelectRows(
+				        FactTrip,
+				        each [VendorID] = 2
+				            and [PickupDateTime] >= #datetime(2024, 3, 1, 0, 0, 0)
+				            and [PickupDateTime] < #datetime(2024, 4, 1, 0, 0, 0)
+				    )
+				in
+				    FilteredRows
+
+	partition Vendor2_2024_04 = m
+		source =
+				let
+				    Source = Sql.Database("6ztxy5cesmcuhihkgrhbkpxmdm-bd5ehkikwtiedmh4fkrihjbzhq.datawarehouse.fabric.microsoft.com", "4c642cdd-1bb5-4aa8-99c8-90de7841cefd"),
+				    FactTrip = Source{[ Schema="dbo", Item="FactTrip"]}[Data],
+				    FilteredRows = Table.SelectRows(
+				        FactTrip,
+				        each [VendorID] = 2
+				            and [PickupDateTime] >= #datetime(2024, 4, 1, 0, 0, 0)
+				            and [PickupDateTime] < #datetime(2024, 5, 1, 0, 0, 0)
+				    )
+				in
+				    FilteredRows
+
+	partition Vendor2_2024_05 = m
+		source =
+				let
+				    Source = Sql.Database("6ztxy5cesmcuhihkgrhbkpxmdm-bd5ehkikwtiedmh4fkrihjbzhq.datawarehouse.fabric.microsoft.com", "4c642cdd-1bb5-4aa8-99c8-90de7841cefd"),
+				    FactTrip = Source{[ Schema="dbo", Item="FactTrip"]}[Data],
+				    FilteredRows = Table.SelectRows(
+				        FactTrip,
+				        each [VendorID] = 2
+				            and [PickupDateTime] >= #datetime(2024, 5, 1, 0, 0, 0)
+				            and [PickupDateTime] < #datetime(2024, 6, 1, 0, 0, 0)
+				    )
+				in
+				    FilteredRows
+
+	partition Vendor2_2024_06 = m
+		source =
+				let
+				    Source = Sql.Database("6ztxy5cesmcuhihkgrhbkpxmdm-bd5ehkikwtiedmh4fkrihjbzhq.datawarehouse.fabric.microsoft.com", "4c642cdd-1bb5-4aa8-99c8-90de7841cefd"),
+				    FactTrip = Source{[ Schema="dbo", Item="FactTrip"]}[Data],
+				    FilteredRows = Table.SelectRows(
+				        FactTrip,
+				        each [VendorID] = 2
+				            and [PickupDateTime] >= #datetime(2024, 6, 1, 0, 0, 0)
+				            and [PickupDateTime] < #datetime(2024, 7, 1, 0, 0, 0)
+				    )
+				in
+				    FilteredRows
+
+	partition Vendor2_2024_07 = m
+		source =
+				let
+				    Source = Sql.Database("6ztxy5cesmcuhihkgrhbkpxmdm-bd5ehkikwtiedmh4fkrihjbzhq.datawarehouse.fabric.microsoft.com", "4c642cdd-1bb5-4aa8-99c8-90de7841cefd"),
+				    FactTrip = Source{[ Schema="dbo", Item="FactTrip"]}[Data],
+				    FilteredRows = Table.SelectRows(
+				        FactTrip,
+				        each [VendorID] = 2
+				            and [PickupDateTime] >= #datetime(2024, 7, 1, 0, 0, 0)
+				            and [PickupDateTime] < #datetime(2024, 8, 1, 0, 0, 0)
+				    )
+				in
+				    FilteredRows
+
+	partition Vendor2_2024_08 = m
+		source =
+				let
+				    Source = Sql.Database("6ztxy5cesmcuhihkgrhbkpxmdm-bd5ehkikwtiedmh4fkrihjbzhq.datawarehouse.fabric.microsoft.com", "4c642cdd-1bb5-4aa8-99c8-90de7841cefd"),
+				    FactTrip = Source{[ Schema="dbo", Item="FactTrip"]}[Data],
+				    FilteredRows = Table.SelectRows(
+				        FactTrip,
+				        each [VendorID] = 2
+				            and [PickupDateTime] >= #datetime(2024, 8, 1, 0, 0, 0)
+				            and [PickupDateTime] < #datetime(2024, 9, 1, 0, 0, 0)
+				    )
+				in
+				    FilteredRows
+
+	partition Vendor6_2024_01 = m
+		source =
+				let
+				    Source = Sql.Database("6ztxy5cesmcuhihkgrhbkpxmdm-bd5ehkikwtiedmh4fkrihjbzhq.datawarehouse.fabric.microsoft.com", "4c642cdd-1bb5-4aa8-99c8-90de7841cefd"),
+				    FactTrip = Source{[ Schema="dbo", Item="FactTrip"]}[Data],
+				    FilteredRows = Table.SelectRows(
+				        FactTrip,
+				        each [VendorID] = 6
+				            and [PickupDateTime] >= #datetime(2024, 1, 1, 0, 0, 0)
+				            and [PickupDateTime] < #datetime(2024, 2, 1, 0, 0, 0)
+				    )
+				in
+				    FilteredRows
+
+	partition Vendor6_2024_02 = m
+		source =
+				let
+				    Source = Sql.Database("6ztxy5cesmcuhihkgrhbkpxmdm-bd5ehkikwtiedmh4fkrihjbzhq.datawarehouse.fabric.microsoft.com", "4c642cdd-1bb5-4aa8-99c8-90de7841cefd"),
+				    FactTrip = Source{[ Schema="dbo", Item="FactTrip"]}[Data],
+				    FilteredRows = Table.SelectRows(
+				        FactTrip,
+				        each [VendorID] = 6
+				            and [PickupDateTime] >= #datetime(2024, 2, 1, 0, 0, 0)
+				            and [PickupDateTime] < #datetime(2024, 3, 1, 0, 0, 0)
+				    )
+				in
+				    FilteredRows
+
+	partition Vendor6_2024_03 = m
+		source =
+				let
+				    Source = Sql.Database("6ztxy5cesmcuhihkgrhbkpxmdm-bd5ehkikwtiedmh4fkrihjbzhq.datawarehouse.fabric.microsoft.com", "4c642cdd-1bb5-4aa8-99c8-90de7841cefd"),
+				    FactTrip = Source{[ Schema="dbo", Item="FactTrip"]}[Data],
+				    FilteredRows = Table.SelectRows(
+				        FactTrip,
+				        each [VendorID] = 6
+				            and [PickupDateTime] >= #datetime(2024, 3, 1, 0, 0, 0)
+				            and [PickupDateTime] < #datetime(2024, 4, 1, 0, 0, 0)
+				    )
+				in
+				    FilteredRows
+
+	partition Vendor6_2024_04 = m
+		source =
+				let
+				    Source = Sql.Database("6ztxy5cesmcuhihkgrhbkpxmdm-bd5ehkikwtiedmh4fkrihjbzhq.datawarehouse.fabric.microsoft.com", "4c642cdd-1bb5-4aa8-99c8-90de7841cefd"),
+				    FactTrip = Source{[ Schema="dbo", Item="FactTrip"]}[Data],
+				    FilteredRows = Table.SelectRows(
+				        FactTrip,
+				        each [VendorID] = 6
+				            and [PickupDateTime] >= #datetime(2024, 4, 1, 0, 0, 0)
+				            and [PickupDateTime] < #datetime(2024, 5, 1, 0, 0, 0)
+				    )
+				in
+				    FilteredRows
+

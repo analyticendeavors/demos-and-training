@@ -1,0 +1,60 @@
+table DimDate
+	lineageTag: 58a27991-f578-4c9f-b2d4-339985b35bb0
+	dataCategory: Time
+
+	column DateKey
+		dataType: int64
+		isHidden
+		isKey
+		lineageTag: 21954c5c-249e-42c4-9288-12b92ad3dddc
+		summarizeBy: none
+		sourceColumn: DateKey
+
+	column Date
+		dataType: dateTime
+		formatString: yyyy-mm-dd
+		lineageTag: 2a8a1d32-2491-4e30-a9be-a7c444e430f0
+		summarizeBy: none
+		sourceColumn: Date
+
+	column Year
+		dataType: int64
+		lineageTag: 866d734c-6ce9-49cd-bff2-ec878e1540ec
+		summarizeBy: none
+		sourceColumn: Year
+
+	column MonthNumber
+		dataType: int64
+		isHidden
+		lineageTag: f9213036-f3d7-4775-b6b6-f2a140f55c08
+		summarizeBy: none
+		sourceColumn: MonthNumber
+
+	column MonthName
+		dataType: string
+		lineageTag: 48ab6e5e-2a5f-4b11-805c-e4c7480b1bf1
+		summarizeBy: none
+		sourceColumn: MonthName
+		sortByColumn: MonthNumber
+
+	column Quarter
+		dataType: int64
+		lineageTag: 0f17780f-8412-4739-a2b3-a5a4b4b924d9
+		summarizeBy: none
+		sourceColumn: Quarter
+
+	column DayOfMonth
+		dataType: int64
+		lineageTag: 160b3525-44ac-4596-b534-6cea45c7d5f1
+		summarizeBy: none
+		sourceColumn: DayOfMonth
+
+	partition DimDate = m
+		mode: import
+		source =
+				let
+					Source = Sql.Database("6ztxy5cesmcuhihkgrhbkpxmdm-bd5ehkikwtiedmh4fkrihjbzhq.datawarehouse.fabric.microsoft.com", "4c642cdd-1bb5-4aa8-99c8-90de7841cefd"),
+					Data = Source{[Schema="dbo", Item="DimDate"]}[Data]
+				in
+					Data
+

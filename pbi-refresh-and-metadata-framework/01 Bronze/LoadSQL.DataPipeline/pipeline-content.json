@@ -1,0 +1,103 @@
+{
+  "properties": {
+    "activities": [
+      {
+        "type": "Copy",
+        "typeProperties": {
+          "source": {
+            "type": "SqlServerSource",
+            "sqlReaderQuery": {
+              "value": "@concat('SELECT * FROM dbo.', pipeline().parameters.SourceTableName, if(empty(pipeline().parameters.Filter), '', concat(' WHERE ', pipeline().parameters.Filter)))",
+              "type": "Expression"
+            },
+            "partitionOption": "None",
+            "queryTimeout": "02:00:00",
+            "datasetSettings": {
+              "type": "SqlServerTable",
+              "typeProperties": {
+                "schema": "dbo",
+                "table": {
+                  "value": "@pipeline().parameters.SourceTableName",
+                  "type": "Expression"
+                }
+              },
+              "schema": [],
+              "externalReferences": {
+                "connection": {
+                  "value": "@pipeline().parameters.ConnectionID",
+                  "type": "Expression"
+                }
+              },
+              "annotations": []
+            }
+          },
+          "sink": {
+            "type": "ParquetSink",
+            "formatSettings": {
+              "type": "ParquetWriteSettings"
+            },
+            "storeSettings": {
+              "type": "LakehouseWriteSettings"
+            },
+            "datasetSettings": {
+              "type": "Parquet",
+              "typeProperties": {
+                "location": {
+                  "type": "LakehouseLocation",
+                  "fileName": {
+                    "value": "@if(empty(pipeline().parameters.FileName), concat(pipeline().parameters.SourceTableName, '.parquet'), pipeline().parameters.FileName)",
+                    "type": "Expression"
+                  }
+                },
+                "compressionCodec": "snappy"
+              },
+              "schema": [],
+              "connectionSettings": {
+                "name": "Bronze",
+                "properties": {
+                  "type": "Lakehouse",
+                  "typeProperties": {
+                    "artifactId": "3e32922b-6231-8fc3-46aa-e22e422dd95b",
+                    "workspaceId": "00000000-0000-0000-0000-000000000000",
+                    "rootFolder": "Files"
+                  },
+                  "externalReferences": {
+                    "connection": "f3ff14e2-4d12-41bc-9d0a-e28cfb99fc49"
+                  },
+                  "annotations": []
+                }
+              },
+              "annotations": []
+            }
+          },
+          "enableStaging": false
+        },
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "Copy SQL table to Bronze file",
+        "dependsOn": []
+      }
+    ],
+    "parameters": {
+      "SourceTableName": {
+        "type": "string"
+      },
+      "ConnectionID": {
+        "type": "string"
+      },
+      "Filter": {
+        "type": "string",
+        "defaultValue": ""
+      },
+      "FileName": {
+        "type": "string",
+        "defaultValue": ""
+      }
+    }
+  }
+}

@@ -1,0 +1,89 @@
+table FactTrip
+
+	measure 'Trip Count' = COUNTROWS(FactTrip)
+		formatString: #,##0
+
+	measure 'Total Fare' = SUM(FactTrip[FareAmount])
+		formatString: $#,##0.00
+
+	measure 'Total Tips' = SUM(FactTrip[TipAmount])
+		formatString: $#,##0.00
+
+	measure 'Total Revenue' = SUM(FactTrip[TotalAmount])
+		formatString: $#,##0.00
+
+	measure 'Average Trip Distance' = AVERAGE(FactTrip[TripDistance])
+		formatString: #,##0.00
+
+	column VendorID
+		dataType: int64
+		isHidden
+		summarizeBy: none
+		sourceColumn: VendorID
+
+	column PickupDateTime
+		dataType: dateTime
+		summarizeBy: none
+		sourceColumn: PickupDateTime
+
+	column DropoffDateTime
+		dataType: dateTime
+		summarizeBy: none
+		sourceColumn: DropoffDateTime
+
+	column PickupDateKey
+		dataType: int64
+		isHidden
+		summarizeBy: none
+		sourceColumn: PickupDateKey
+
+	column PickupLocationID
+		dataType: int64
+		isHidden
+		summarizeBy: none
+		sourceColumn: PickupLocationID
+
+	column DropoffLocationID
+		dataType: int64
+		summarizeBy: none
+		sourceColumn: DropoffLocationID
+
+	column PassengerCount
+		dataType: double
+		summarizeBy: sum
+		sourceColumn: PassengerCount
+
+	column TripDistance
+		dataType: double
+		summarizeBy: sum
+		sourceColumn: TripDistance
+
+	column PaymentType
+		dataType: int64
+		summarizeBy: none
+		sourceColumn: PaymentType
+
+	column FareAmount
+		dataType: double
+		summarizeBy: sum
+		sourceColumn: FareAmount
+
+	column TipAmount
+		dataType: double
+		summarizeBy: sum
+		sourceColumn: TipAmount
+
+	column TotalAmount
+		dataType: double
+		summarizeBy: sum
+		sourceColumn: TotalAmount
+
+	partition FactTrip = m
+		mode: import
+		source =
+				let
+					Source = Sql.Database("6ztxy5cesmcuhihkgrhbkpxmdm-bd5ehkikwtiedmh4fkrihjbzhq.datawarehouse.fabric.microsoft.com", "4c642cdd-1bb5-4aa8-99c8-90de7841cefd"),
+					Data = Source{[Schema="dbo", Item="FactTrip"]}[Data]
+				in
+					Data
+
